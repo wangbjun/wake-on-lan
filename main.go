@@ -11,7 +11,7 @@ import (
 const (
 	IP   = "192.168.31.214"
 	HOST = "192.168.31.8"
-	PORT = "9"
+	PORT = ":9"
 	MAC  = "4C:ED:FB:94:71:0F"
 )
 
