@@ -22,18 +22,18 @@ func main() {
 	if hour < 20 || hour > 23 {
 		return
 	}
-	addr, err := net.ResolveIPAddr("ip4", IP)
-	if err != nil {
-		log.Println("resolve ip addr error:" + err.Error())
-	}
-	if err = ping.Ping(1, addr); err != nil {
-		log.Println("ip unreachable,error:" + err.Error())
+	// 当主机不在线的时候发送唤醒数据包
+	addr, err := net.ResolveIPAddr("ip4", HOST)
+	err = ping.Ping(1, addr)
+	if err == nil {
+		log.Println("target host is online")
 	} else {
-		// 当主机不在线的时候发送唤醒数据包
-		addr, err := net.ResolveIPAddr("ip4", HOST)
-		err = ping.Ping(1, addr)
-		if err == nil {
-			log.Println("target host is online")
+		addr, err := net.ResolveIPAddr("ip4", IP)
+		if err != nil {
+			log.Println("resolve ip addr error:" + err.Error())
+		}
+		if err = ping.Ping(1, addr); err != nil {
+			log.Println("ip unreachable,error:" + err.Error())
 		} else {
 			err := wol.Wol(HOST+PORT, MAC)
 			if err != nil {
