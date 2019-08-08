@@ -19,7 +19,7 @@ func main() {
 	// 晚上8点到11点之间才触发,由于路由器时区有问题，这里手动+8小时
 	log.Println("Now Time is: " + time.Now().Add(8*time.Hour).Format("2006-01-02 15:04:05"))
 	hour := time.Now().Hour() + 8
-	if hour < 20 || hour > 23 {
+	if hour < 20 || hour > 22 {
 		return
 	}
 	// 判断当前主机是否已经在线
