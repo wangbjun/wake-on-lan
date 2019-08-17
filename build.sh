@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-GOOS=linux GOARCH=mipsle go build -ldflags "-s -w"
+export GO111MODULE=on
+GOOS=linux GOARCH=mipsle go build -o autoWol -ldflags "-s -w"
