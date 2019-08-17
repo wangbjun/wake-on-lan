@@ -84,14 +84,12 @@ func wakeUp(c *cli.Context) error {
 			fmt.Printf("Now Time is: " + time.Now().Add(8*time.Hour).Format("2006-01-02 15:04:05") + "\n")
 			hour := time.Now().Hour() + 8
 			if hour < start || hour > end {
-				return nil
+				continue
 			}
 			// 判断当前主机是否已经在线
 			addr, err := net.ResolveIPAddr("ip4", wolIp)
 			err = ping.Ping(1, addr)
-			if err == nil {
-				fmt.Printf("target host is online\n")
-			} else {
+			if err != nil {
 				// 当手机连入WiFi的时候发送唤醒数据包
 				addr, err := net.ResolveIPAddr("ip4", relyIp)
 				if err = ping.Ping(1, addr); err == nil {
@@ -100,8 +98,9 @@ func wakeUp(c *cli.Context) error {
 						fmt.Println("wake on lan failed, error:" + err.Error())
 					}
 				}
+			} else {
+				fmt.Printf("target host is online!\n")
 			}
-			return nil
 		}
 	}
 }
