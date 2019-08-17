@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"log"
 	"net"
 	"time"
 )
@@ -46,7 +45,7 @@ func Ping(i int, destAddr *net.IPAddr) error {
 	tEnd := time.Now()
 	duration := tEnd.Sub(tStart).Nanoseconds() / 1e6
 
-	log.Printf("%d bytes from %s: seq=%d time=%dms\n", receiveCnt, destAddr.String(), icmp.SequenceNum, duration)
+	fmt.Printf("%d bytes from %s: seq=%d time=%dms\n", receiveCnt, destAddr.String(), icmp.SequenceNum, duration)
 
 	return err
 }

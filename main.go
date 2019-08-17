@@ -19,7 +19,7 @@ func main() {
 	app.Usage = "一个根据条件定时唤醒电脑的小工具,可以运行在路由器上面"
 	app.Description = "这个工具主要的用途是运行在我的路由器上面（也可以运行在其它平台），不断的ping我的手机IP，" +
 		"如果我下班回家手机一旦连入路由器就会自动唤醒我的电脑，懒人必备！" +
-		"\n\t 使用方式，举个例子: auto-wol -r 192.168.31.214 -i 192.168.31.8 -m 4C:ED:FB:94:71:0F"
+		"\n\t 使用方式，举个例子: autoWol -r 192.168.31.214 -i 192.168.31.8 -m 4C:ED:FB:94:71:0F"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:     "replyIp,r",
