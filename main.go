@@ -92,7 +92,7 @@ func wakeUp(c *cli.Context) error {
 			if err != nil {
 				// 当手机连入WiFi的时候发送唤醒数据包
 				addr, err := net.ResolveIPAddr("ip4", relyIp)
-				if err = ping.Ping(1, addr); err == nil {
+				if err = ping.Ping(1, addr); err != nil {
 					err := wol.Wol(wolIp+":"+wolPort, wolMac)
 					if err != nil {
 						fmt.Println("wake on lan failed, error:" + err.Error())
