@@ -22,7 +22,7 @@ func main() {
 		"\n\t 使用方式，举个例子: autoWol -r 192.168.31.214 -i 192.168.31.8 -m 4C:ED:FB:94:71:0F"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:     "replyIp,r",
+			Name:     "relyIp,r",
 			Required: true,
 			Usage:    "根据哪个设备IP的状态去唤醒电脑，比如手机的IP",
 		},
@@ -81,25 +81,29 @@ func wakeUp(c *cli.Context) error {
 		select {
 		case <-ticker.C:
 			// 由于路由器时区有问题，默认UTC时区，这里手动+8小时
-			fmt.Printf("Now Time is: " + time.Now().Add(8*time.Hour).Format("2006-01-02 15:04:05") + "\n")
+			fmt.Println("Now Time is: " + time.Now().Add(8*time.Hour).Format("2006-01-02 15:04:05"))
 			hour := time.Now().Hour() + 8
 			if hour < start || hour > end {
 				continue
 			}
 			// 判断当前主机是否已经在线
-			addr, err := net.ResolveIPAddr("ip4", wolIp)
-			err = ping.Ping(1, addr)
+			addr, _ := net.ResolveIPAddr("ip4", wolIp)
+			if ping.Ping(1, addr) == nil {
+				fmt.Println("target host is online!")
+				continue
+			}
+			// 如果主机不在线，查看当前依赖的设备是否在线
+			addr, _ = net.ResolveIPAddr("ip4", relyIp)
+			if ping.Ping(1, addr) != nil {
+				fmt.Println("relyIp is not online!")
+				continue
+			}
+			// 发送数据唤醒包
+			err := wol.Wol(wolIp+":"+wolPort, wolMac)
 			if err != nil {
-				// 当手机连入WiFi的时候发送唤醒数据包
-				addr, err := net.ResolveIPAddr("ip4", relyIp)
-				if err = ping.Ping(1, addr); err != nil {
-					err := wol.Wol(wolIp+":"+wolPort, wolMac)
-					if err != nil {
-						fmt.Println("wake on lan failed, error:" + err.Error())
-					}
-				}
+				fmt.Println("wake on lan failed, error:" + err.Error())
 			} else {
-				fmt.Printf("target host is online!\n")
+				fmt.Println("wake on lan success")
 			}
 		}
 	}
