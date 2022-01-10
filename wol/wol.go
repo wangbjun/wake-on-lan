@@ -23,10 +23,9 @@ type MagicPacket struct {
 	payload [16]MACAddress
 }
 
-func Wol(addr string, mac string) error {
-	udpAddr, err := net.ResolveUDPAddr("udp", addr)
-	if err != nil {
-		return err
+func Wol(mac string) error {
+	target := net.UDPAddr{
+		IP: net.IPv4bcast,
 	}
 
 	// Build the magic packet.
@@ -42,14 +41,13 @@ func Wol(addr string, mac string) error {
 	}
 
 	// Grab a UDP connection to send our packet of bytes.
-	conn, err := net.DialUDP("udp", nil, udpAddr)
+	conn, err := net.DialUDP("udp", nil, &target)
 	if err != nil {
 		return err
 	}
 	defer conn.Close()
 
 	fmt.Printf("Attempting to send a magic packet to MAC %s\n", mac)
-	fmt.Printf("... Broadcasting to: %s\n", addr)
 	n, err := conn.Write(bs)
 	if err == nil && n != 102 {
 		err = fmt.Errorf("magic packet sent was %d bytes (expected 102 bytes sent)", n)
@@ -83,12 +81,12 @@ func New(mac string) (*MagicPacket, error) {
 		macAddr[idx] = hwAddr[idx]
 	}
 
-	// Setup the header which is 6 repetitions of 0xFF.
+	// Set up the header which is 6 repetitions of 0xFF.
 	for idx := range packet.header {
 		packet.header[idx] = 0xFF
 	}
 
-	// Setup the payload which is 16 repetitions of the MAC addr.
+	// Set up the payload which is 16 repetitions of the MAC addr.
 	for idx := range packet.payload {
 		packet.payload[idx] = macAddr
 	}
