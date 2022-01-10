@@ -31,14 +31,15 @@ func run() error {
 		return err
 	}
 	result := out.String()
-	if strings.Contains("jwang", result) {
+	if strings.Contains(result, "jwang") {
 		return errors.New("jwang is online")
 	}
-	if strings.Contains("redmi-k20-pro-premium-edition", result) {
+	if strings.Contains(result, "redmi-k20-pro-premium-edition") {
 		err = wol.Wol("192.168.1.2:9", "2c:f0:5d:3b:7f:ca")
 		if err != nil {
 			return err
 		}
+		log.Println("wake jwang success")
 	}
 	return nil
 }
