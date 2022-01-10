@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
-export GO111MODULE=on
-GOOS=linux GOARCH=mipsle go build -o autoWol -ldflags "-s -w"
+#!/bin/bash
+
+GOARM=7 GOARCH=arm GOOS=linux go build -o autoWol -ldflags="-s -w"
